@@ -8,9 +8,7 @@ backported to 1.7.10. This was made possible with the help of the
   - Used for the simplification of configuration reading and writing.
 
 ## Download
-[Modrinth]()
-
-[CurseForge]()
+[Modrinth](https://modrinth.com/mod/environmental-creepers-backport)
 
 ## Differences Between Official and This Version
 There currently is not a command to reload the config while a world is
