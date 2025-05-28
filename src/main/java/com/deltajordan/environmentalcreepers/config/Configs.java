@@ -2,19 +2,20 @@ package com.deltajordan.environmentalcreepers.config;
 
 import java.util.HashSet;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.world.Explosion;
+
 import com.deltajordan.environmentalcreepers.EnvironmentalCreepers;
 import com.gtnewhorizon.gtnhlib.config.Config;
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.world.Explosion;
 
 public class Configs {
 
     @Config(modid = EnvironmentalCreepers.MODID, category = "general")
     @Config.RequiresWorldRestart
     public static class General {
+
         @Config.Comment("Log some messages on each explosion, for debugging purposes. Leave disabled for normal use.")
         @Config.DefaultBoolean(false)
         public static boolean verbose_logging;
@@ -84,8 +85,8 @@ public class Configs {
         @Config.DefaultBoolean(false)
         public static boolean disable_other_explosion_item_damage;
 
-        @Config.Comment("Enable setting a y range for Creepers to do block damage." +
-                " Set the range in Generic -> 'creeperAltitudeDamageMaxY' and 'creeperAltitudeDamageMinY'.")
+        @Config.Comment("Enable setting a y range for Creepers to do block damage."
+            + " Set the range in Generic -> 'creeperAltitudeDamageMaxY' and 'creeperAltitudeDamageMinY'.")
         @Config.DefaultBoolean(false)
         public static boolean enable_creeper_altitude_condition;
 
@@ -109,40 +110,41 @@ public class Configs {
     @Config(modid = EnvironmentalCreepers.MODID, category = "lists")
     @Config.RequiresWorldRestart
     public static class Lists {
-        @Config.Comment("The list type for the entity class filtering." +
-                " Either 'NONE' or 'BLACKLIST' or 'WHITELIST'." +
-                " Blacklisted (or non-whitelisted) entities will not be removed from the explosion damage list." +
-                " This allows for example those entities to run their custom code when damaged by explosions.")
+
+        @Config.Comment("The list type for the entity class filtering."
+            + " Either 'NONE' or 'BLACKLIST' or 'WHITELIST'."
+            + " Blacklisted (or non-whitelisted) entities will not be removed from the explosion damage list."
+            + " This allows for example those entities to run their custom code when damaged by explosions.")
         @Config.DefaultEnum("BLACKLIST")
         public static ListType entity_class_list_type;
 
-        @Config.Comment("The list type for the explosion class filtering." +
-                " Either 'NONE' or 'BLACKLIST' or 'WHITELIST'." +
-                " Blacklisted (or non-whitelisted) explosion types won't be handled by this mod.")
+        @Config.Comment("The list type for the explosion class filtering."
+            + " Either 'NONE' or 'BLACKLIST' or 'WHITELIST'."
+            + " Blacklisted (or non-whitelisted) explosion types won't be handled by this mod.")
         @Config.DefaultEnum("BLACKLIST")
         public static ListType explosion_class_list_type;
 
-        @Config.Comment("A list of full class names of entities that should be ignored." +
-                " This means that these entities will not get removed from the" +
-                " list of entities to be damaged by the explosion, allowing these" +
-                " entities to handle the explosion code themselves." +
-                " Used if entityClassListType = BLACKLIST")
+        @Config.Comment("A list of full class names of entities that should be ignored."
+            + " This means that these entities will not get removed from the"
+            + " list of entities to be damaged by the explosion, allowing these"
+            + " entities to handle the explosion code themselves."
+            + " Used if entityClassListType = BLACKLIST")
         @Config.DefaultStringList({})
         private static String[] entity_blacklist_class_names;
 
-        @Config.Comment("A list of full class names of entities that are the only ones" +
-                " that should be acted on, see the comment on entityTypeBlacklist." +
-                " Used if entityClassListType = WHITELIST")
+        @Config.Comment("A list of full class names of entities that are the only ones"
+            + " that should be acted on, see the comment on entityTypeBlacklist."
+            + " Used if entityClassListType = WHITELIST")
         @Config.DefaultStringList({})
         private static String[] entity_whitelist_class_names;
 
-        @Config.Comment("A list of full class names of explosions that should be ignored." +
-                " Used if explosionClassListType = BLACKLIST")
+        @Config.Comment("A list of full class names of explosions that should be ignored."
+            + " Used if explosionClassListType = BLACKLIST")
         @Config.DefaultStringList({ "slimeknights.tconstruct.gadgets.entity.ExplosionEFLN" })
         private static String[] explosion_blacklist_class_names;
 
-        @Config.Comment("A list of full class names of explosions that are the only ones that should be acted on.\n" +
-                " Used if explosionClassListType = WHITELIST")
+        @Config.Comment("A list of full class names of explosions that are the only ones that should be acted on.\n"
+            + " Used if explosionClassListType = WHITELIST")
         @Config.DefaultStringList({})
         private static String[] explosion_whitelist_class_names;
 
@@ -159,35 +161,34 @@ public class Configs {
          * @return True if this explosion should be handled, otherwise false.
          */
         public static boolean shouldHandleExplosion(Explosion explosion) {
-            if (explosion_class_list_type == ListType.NONE)
-                return true;
+            if (explosion_class_list_type == ListType.NONE) return true;
 
             if (explosionFilter == null) {
-                explosionFilter = buildFilterHashSet(explosion_class_list_type,
-                        explosion_whitelist_class_names,
-                        explosion_blacklist_class_names);
+                explosionFilter = buildFilterHashSet(
+                    explosion_class_list_type,
+                    explosion_whitelist_class_names,
+                    explosion_blacklist_class_names);
             }
 
-            return explosionFilter
-                    .contains(explosion.getClass()) == (explosion_class_list_type == ListType.WHITELIST);
+            return explosionFilter.contains(explosion.getClass()) == (explosion_class_list_type == ListType.WHITELIST);
         }
 
         public static boolean shouldHandleExplodedEntity(Entity entity) {
-            if (entity_class_list_type == ListType.NONE)
-                return true;
+            if (entity_class_list_type == ListType.NONE) return true;
 
             if (entityFilter == null) {
-                entityFilter = buildFilterHashSet(entity_class_list_type, entity_whitelist_class_names,
-                        entity_blacklist_class_names);
+                entityFilter = buildFilterHashSet(
+                    entity_class_list_type,
+                    entity_whitelist_class_names,
+                    entity_blacklist_class_names);
             }
 
-            return entityFilter
-                    .contains(entity.getClass()) == (entity_class_list_type == ListType.WHITELIST);
+            return entityFilter.contains(entity.getClass()) == (entity_class_list_type == ListType.WHITELIST);
         }
 
         @SuppressWarnings("unchecked")
         private static HashSet<Class<? extends Entity>> buildFilterHashSet(ListType listType, String[] whitelist,
-                String[] blacklist) {
+            String[] blacklist) {
             HashSet<Class<? extends Entity>> result = new HashSet<>();
 
             String[] classNames;
@@ -206,12 +207,10 @@ public class Configs {
                     if (Entity.class.isAssignableFrom(clazz)) {
                         result.add((Class<? extends Entity>) clazz);
                     } else {
-                        EnvironmentalCreepers.logger.warn("Invalid entity class name (not an Entity): '{}'",
-                                className);
+                        EnvironmentalCreepers.logger.warn("Invalid entity class name (not an Entity): '{}'", className);
                     }
                 } catch (Exception ex) {
-                    EnvironmentalCreepers.logger.warn("Invalid entity class name (class not found): '{}'",
-                            className);
+                    EnvironmentalCreepers.logger.warn("Invalid entity class name (class not found): '{}'", className);
                 }
             }
 

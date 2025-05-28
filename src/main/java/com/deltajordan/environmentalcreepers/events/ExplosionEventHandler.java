@@ -4,10 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import com.deltajordan.environmentalcreepers.EnvironmentalCreepers;
-import com.deltajordan.environmentalcreepers.config.Configs;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -26,6 +22,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.ExplosionEvent;
 
+import com.deltajordan.environmentalcreepers.EnvironmentalCreepers;
+import com.deltajordan.environmentalcreepers.config.Configs;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 public class ExplosionEventHandler {
 
     @SubscribeEvent
@@ -34,26 +35,32 @@ public class ExplosionEventHandler {
 
         if (!Configs.Lists.shouldHandleExplosion(explosion)) {
             if (Configs.General.verbose_logging) {
-                EnvironmentalCreepers.logInfo("Explosion (blocked by white- or blacklist): class: {}, position: {}",
-                        explosion.getClass().getName(), getExplosionPosition(explosion));
+                EnvironmentalCreepers.logInfo(
+                    "Explosion (blocked by white- or blacklist): class: {}, position: {}",
+                    explosion.getClass()
+                        .getName(),
+                    getExplosionPosition(explosion));
             }
 
             return;
         }
 
         if (Configs.General.verbose_logging) {
-            EnvironmentalCreepers.logInfo("Explosion: class: {}, position: {}", explosion.getClass().getName(),
-                    getExplosionPosition(explosion));
+            EnvironmentalCreepers.logInfo(
+                "Explosion: class: {}, position: {}",
+                explosion.getClass()
+                    .getName(),
+                getExplosionPosition(explosion));
         }
 
         if (explosion.getExplosivePlacedBy() instanceof EntityCreeper) {
             if (Configs.Toggles.modify_creeper_explosion_drop_chance
-                    && Configs.Toggles.disable_creeper_explosion_block_damage == false) {
+                && Configs.Toggles.disable_creeper_explosion_block_damage == false) {
                 this.replaceExplosion(event, true);
             }
         } else {
             if (Configs.Toggles.modify_other_explosion_drop_chance
-                    && Configs.Toggles.disable_other_explosion_block_damage == false) {
+                && Configs.Toggles.disable_other_explosion_block_damage == false) {
                 this.replaceExplosion(event, false);
             }
         }
@@ -72,12 +79,12 @@ public class ExplosionEventHandler {
                 this.removeItemEntities(event.getAffectedEntities(), true);
             }
 
-            if (Configs.Toggles.disable_creeper_explosion_block_damage ||
-                    (Configs.Toggles.enable_creeper_altitude_condition &&
-                            (explosion.explosionY < Configs.General.creeper_altitude_damage_min_y ||
-                                    explosion.explosionY > Configs.General.creeper_altitude_damage_max_y))) {
+            if (Configs.Toggles.disable_creeper_explosion_block_damage
+                || (Configs.Toggles.enable_creeper_altitude_condition
+                    && (explosion.explosionY < Configs.General.creeper_altitude_damage_min_y
+                        || explosion.explosionY > Configs.General.creeper_altitude_damage_max_y))) {
                 EnvironmentalCreepers
-                        .logInfo("ExplosionEventHandler - clearAffectedBlockPositions() - Type: 'Creeper'");
+                    .logInfo("ExplosionEventHandler - clearAffectedBlockPositions() - Type: 'Creeper'");
                 explosion.affectedBlockPositions.clear();
             }
 
@@ -97,8 +104,8 @@ public class ExplosionEventHandler {
     }
 
     private void removeItemEntities(List<Entity> list, boolean isCreeper) {
-        EnvironmentalCreepers.logInfo("ExplosionEventHandler.removeItemEntities() - Type: '{}'",
-                isCreeper ? "Creeper" : "Other");
+        EnvironmentalCreepers
+            .logInfo("ExplosionEventHandler.removeItemEntities() - Type: '{}'", isCreeper ? "Creeper" : "Other");
         Iterator<Entity> iter = list.iterator();
 
         while (iter.hasNext()) {
@@ -117,8 +124,11 @@ public class ExplosionEventHandler {
         Explosion explosion = event.explosion;
 
         if (Configs.General.verbose_logging) {
-            EnvironmentalCreepers.logInfo("Replacing the explosion for type '{}' (class: {})",
-                    isCreeper ? "Creeper" : "Other", explosion.getClass().getName());
+            EnvironmentalCreepers.logInfo(
+                "Replacing the explosion for type '{}' (class: {})",
+                isCreeper ? "Creeper" : "Other",
+                explosion.getClass()
+                    .getName());
         }
 
         boolean breakBlocks = explosion.isSmoking;
@@ -142,10 +152,9 @@ public class ExplosionEventHandler {
         if (world instanceof WorldServer) {
             Vec3 pos = getExplosionPosition(explosion);
 
-            if (breakBlocks == false ||
-                    (isCreeper && Configs.Toggles.enable_creeper_altitude_condition &&
-                            (pos.yCoord < Configs.General.creeper_altitude_damage_min_y ||
-                                    pos.yCoord > Configs.General.creeper_altitude_damage_max_y))) {
+            if (breakBlocks == false || (isCreeper && Configs.Toggles.enable_creeper_altitude_condition
+                && (pos.yCoord < Configs.General.creeper_altitude_damage_min_y
+                    || pos.yCoord > Configs.General.creeper_altitude_damage_max_y))) {
                 explosion.affectedBlockPositions.clear();
             }
 
@@ -154,10 +163,15 @@ public class ExplosionEventHandler {
             for (EntityPlayer player : world.playerEntities) {
                 if (player.getDistanceSq(pos.xCoord, pos.yCoord, pos.zCoord) < 4096.0D) {
                     ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(
-                            new S27PacketExplosion(pos.xCoord, pos.yCoord, pos.zCoord, explosionSize,
-                                    explosion.affectedBlockPositions,
-                                    explosion.func_77277_b().get(player) // Knockback map.
-                            ));
+                        new S27PacketExplosion(
+                            pos.xCoord,
+                            pos.yCoord,
+                            pos.zCoord,
+                            explosionSize,
+                            explosion.affectedBlockPositions,
+                            explosion.func_77277_b()
+                                .get(player) // Knockback map.
+                        ));
                 }
             }
         } else {
@@ -168,12 +182,17 @@ public class ExplosionEventHandler {
     }
 
     private void doExplosionB(World world, Explosion explosion, boolean spawnParticles, boolean isCreeper,
-            boolean breakBlocks, boolean isFlaming, float explosionSize) {
+        boolean breakBlocks, boolean isFlaming, float explosionSize) {
         Vec3 pos = getExplosionPosition(explosion);
         Random rand = world.rand;
 
-        world.playSoundEffect(pos.xCoord, pos.yCoord, pos.zCoord, "random.explode", 4.0F,
-                (1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F) * 0.7F);
+        world.playSoundEffect(
+            pos.xCoord,
+            pos.yCoord,
+            pos.zCoord,
+            "random.explode",
+            4.0F,
+            (1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F) * 0.7F);
 
         if (explosionSize >= 2.0F && breakBlocks) {
             world.spawnParticle("hugeexplosion", pos.xCoord, pos.yCoord, pos.zCoord, 1.0D, 0.0D, 0.0D);
@@ -182,9 +201,11 @@ public class ExplosionEventHandler {
         }
 
         float dropChance = (float) (isCreeper ? Configs.General.creeper_explosion_block_drop_chance
-                : Configs.General.other_explosion_block_drop_chance);
-        EnvironmentalCreepers.logInfo("ExplosionEventHandler.doExplosionB() - Type: '{}', drop chance: {}",
-                isCreeper ? "Creeper" : "Other", dropChance);
+            : Configs.General.other_explosion_block_drop_chance);
+        EnvironmentalCreepers.logInfo(
+            "ExplosionEventHandler.doExplosionB() - Type: '{}', drop chance: {}",
+            isCreeper ? "Creeper" : "Other",
+            dropChance);
 
         if (breakBlocks) {
             for (ChunkPosition chunkPos : explosion.affectedBlockPositions) {
@@ -207,15 +228,27 @@ public class ExplosionEventHandler {
                     d3 = d3 * d7;
                     d4 = d4 * d7;
                     d5 = d5 * d7;
-                    world.spawnParticle("explode", (d0 + pos.xCoord) / 2.0D, (d1 + pos.yCoord) / 2.0D,
-                            (d2 + pos.zCoord) / 2.0D, d3, d4, d5);
+                    world.spawnParticle(
+                        "explode",
+                        (d0 + pos.xCoord) / 2.0D,
+                        (d1 + pos.yCoord) / 2.0D,
+                        (d2 + pos.zCoord) / 2.0D,
+                        d3,
+                        d4,
+                        d5);
                     world.spawnParticle("normal", d0, d1, d2, d3, d4, d5);
                 }
 
                 if (block.getMaterial() != Material.air) {
                     if (block.canDropFromExplosion(explosion)) {
-                        block.dropBlockAsItemWithChance(world, chunkPos.chunkPosX, chunkPos.chunkPosY,
-                                chunkPos.chunkPosZ, meta, dropChance, 0);
+                        block.dropBlockAsItemWithChance(
+                            world,
+                            chunkPos.chunkPosX,
+                            chunkPos.chunkPosY,
+                            chunkPos.chunkPosZ,
+                            meta,
+                            dropChance,
+                            0);
                     }
 
                     block.onBlockExploded(world, chunkPos.chunkPosX, chunkPos.chunkPosY, chunkPos.chunkPosZ, explosion);
@@ -236,26 +269,28 @@ public class ExplosionEventHandler {
     }
 
     private void causeCreeperChainReaction(World world, Vec3 explosionPos) {
-        EnvironmentalCreepers.logInfo("ExplosionEventHandler.causeCreeperChainReaction() - Explosion Position: '{}'",
-                explosionPos);
+        EnvironmentalCreepers
+            .logInfo("ExplosionEventHandler.causeCreeperChainReaction() - Explosion Position: '{}'", explosionPos);
 
         double r = Configs.General.creeper_chain_reaction_max_distance;
         double rSq = r * r;
         AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(
-                explosionPos.xCoord - r, explosionPos.yCoord - r, explosionPos.zCoord - r,
-                explosionPos.xCoord + r, explosionPos.yCoord + r, explosionPos.zCoord + r);
+            explosionPos.xCoord - r,
+            explosionPos.yCoord - r,
+            explosionPos.zCoord - r,
+            explosionPos.xCoord + r,
+            explosionPos.yCoord + r,
+            explosionPos.zCoord + r);
         List<EntityCreeper> list = world.getEntitiesWithinAABB(EntityCreeper.class, bb);
 
         for (EntityCreeper creeper : list) {
-            if (!creeper.isEntityAlive())
-                continue;
+            if (!creeper.isEntityAlive()) continue;
 
             if (creeper.getCreeperState() <= 0 && world.rand.nextFloat() < Configs.General.creeper_chain_reaction_chance
-                    &&
-                    creeper.getDistanceSq(explosionPos.xCoord, explosionPos.yCoord, explosionPos.zCoord) <= rSq) {
+                && creeper.getDistanceSq(explosionPos.xCoord, explosionPos.yCoord, explosionPos.zCoord) <= rSq) {
                 EnvironmentalCreepers.logInfo(
-                        "ExplosionEventHandler.causeCreeperChainReaction() - Igniting Creeper: '{}'",
-                        creeper.toString());
+                    "ExplosionEventHandler.causeCreeperChainReaction() - Igniting Creeper: '{}'",
+                    creeper.toString());
                 creeper.setCreeperState(1);
             }
         }

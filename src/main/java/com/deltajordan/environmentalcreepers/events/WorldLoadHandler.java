@@ -1,10 +1,11 @@
 package com.deltajordan.environmentalcreepers.events;
 
+import net.minecraftforge.event.world.WorldEvent;
+
 import com.deltajordan.environmentalcreepers.config.Configs;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.event.world.WorldEvent;
 
 public class WorldLoadHandler extends Event {
 
