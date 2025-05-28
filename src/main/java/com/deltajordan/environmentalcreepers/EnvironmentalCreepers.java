@@ -1,8 +1,8 @@
 package com.deltajordan.environmentalcreepers;
 
-import net.minecraftforge.common.MinecraftForge;
-
 import java.util.Map;
+
+import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,13 +18,19 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = EnvironmentalCreepers.MODID, version = Tags.VERSION, name = "Environmental Creepers", acceptedMinecraftVersions = "[1.7.10]")
+@Mod(
+    modid = EnvironmentalCreepers.MODID,
+    version = Tags.VERSION,
+    name = "Environmental Creepers",
+    acceptedMinecraftVersions = "[1.7.10]")
 public class EnvironmentalCreepers {
 
     public static final String MODID = "environmentalcreepers";
     public static final Logger logger = LogManager.getLogger(MODID);
 
-    @SidedProxy(clientSide = "com.deltajordan.environmentalcreepers.proxy.CommonProxy", serverSide = "com.deltajordan.environmentalcreepers.proxy.CommonProxy")
+    @SidedProxy(
+        clientSide = "com.deltajordan.environmentalcreepers.proxy.CommonProxy",
+        serverSide = "com.deltajordan.environmentalcreepers.proxy.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
@@ -41,7 +47,8 @@ public class EnvironmentalCreepers {
 
     @NetworkCheckHandler
     public boolean checkModLists(Map<String, String> map, Side side) {
-        return side != Side.CLIENT || map.containsKey(MODID) && map.get(MODID).equals(Tags.VERSION);
+        return side != Side.CLIENT || map.containsKey(MODID) && map.get(MODID)
+            .equals(Tags.VERSION);
     }
 
     public static void logInfo(String message, Object... params) {
