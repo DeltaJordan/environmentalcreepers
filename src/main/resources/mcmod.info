@@ -1,0 +1,25 @@
+{
+  "modListVersion": 2,
+  "modList": [
+    {
+      "modid": "${modId}",
+      "name": "${modName}",
+      "description": "A small mod for Minecraft that allows tweaking some aspects of Creeper explosions and other explosions, like the chance to drop the blocks as items or disable damage to item entities.",
+      "version": "${modVersion}",
+      "mcversion": "${minecraftVersion}",
+      "url": "https://github.com/DeltaJordan/environmentalcreepers",
+      "updateUrl": "",
+      "authorList": [
+        "DeltaJordan"
+      ],
+      "credits": "",
+      "logoFile": "",
+      "screenshots": [],
+      "parent": "",
+      "requiredMods": [],
+      "dependencies": [],
+      "dependants": [],
+      "useDependencyInformation": false
+    }
+  ]
+}
