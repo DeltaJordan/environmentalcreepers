@@ -1,7 +1,5 @@
 package com.deltajordan.environmentalcreepers;
 
-import java.util.Map;
-
 import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,15 +13,14 @@ import com.deltajordan.environmentalcreepers.proxy.CommonProxy;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkCheckHandler;
-import cpw.mods.fml.relauncher.Side;
 
 @Mod(
     modid = EnvironmentalCreepers.MODID,
     version = Tags.VERSION,
     name = "Environmental Creepers",
     dependencies = "required-after:gtnhlib;",
-    acceptedMinecraftVersions = "[1.7.10]")
+    acceptedMinecraftVersions = "[1.7.10]",
+    acceptableRemoteVersions = "*")
 public class EnvironmentalCreepers {
 
     public static final String MODID = "environmentalcreepers";
@@ -44,12 +41,6 @@ public class EnvironmentalCreepers {
 
         MinecraftForge.EVENT_BUS.register(new ExplosionEventHandler());
         MinecraftForge.EVENT_BUS.register(new WorldLoadHandler());
-    }
-
-    @NetworkCheckHandler
-    public boolean checkModLists(Map<String, String> map, Side side) {
-        return side != Side.CLIENT || map.containsKey(MODID) && map.get(MODID)
-            .equals(Tags.VERSION);
     }
 
     public static void logInfo(String message, Object... params) {
